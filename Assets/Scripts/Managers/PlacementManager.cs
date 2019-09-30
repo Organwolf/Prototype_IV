@@ -34,6 +34,7 @@ public class PlacementManager : MonoBehaviour
     private GameObject groundPlane;
     private bool waterIsPlaced;
     private bool waterIsVisible;
+    private bool wallPlacementEnabled;
 
     // Csv variables
     private CSVReader csvReader;
@@ -47,6 +48,10 @@ public class PlacementManager : MonoBehaviour
     // UI
     [SerializeField] Slider multiplyElevationSlider;
     [SerializeField] Slider adjustRadiusSlider;
+    [SerializeField] Button resetSessionButton;
+    [SerializeField] Button renderWaterButton;
+    [SerializeField] Button placeWallsButton;
+    [SerializeField] GameObject sliderPanel;
 
     // Raycasts
     private List<ARRaycastHit> hitsAR = new List<ARRaycastHit>();
@@ -88,6 +93,10 @@ public class PlacementManager : MonoBehaviour
         endPoint.SetActive(false);
         measureLine = GetComponent<LineRenderer>();
         measureLine.enabled = false;
+
+        // UI
+        renderWaterButton.interactable = false;
+        placeWallsButton.interactable = false;
     }
 
     private void Start()
@@ -125,11 +134,12 @@ public class PlacementManager : MonoBehaviour
                             var hitPose = hitsAR[0].pose;
                             groundPlane = Instantiate(groundPlanePrefab, hitPose.position, hitPose.rotation);
                             planeIsPlaced = true;
+                            placeWallsButton.interactable = true;
                             TogglePlaneDetection();
                         }
                     }
 
-                    else if (planeIsPlaced)
+                    else if (planeIsPlaced && wallPlacementEnabled)
                     {
                         Ray ray = arCamera.ScreenPointToRay(touch.position);
                         RaycastHit hitInfo;
@@ -146,7 +156,7 @@ public class PlacementManager : MonoBehaviour
                     //}
                 }
 
-                else if (TouchPhase.Moved == touch.phase)
+                else if (TouchPhase.Moved == touch.phase && wallPlacementEnabled)
                 {
                     Ray ray = arCamera.ScreenPointToRay(touch.position);
                     RaycastHit hitInfo;
@@ -158,22 +168,27 @@ public class PlacementManager : MonoBehaviour
                     }
                 }
 
-                else if (TouchPhase.Ended == touch.phase)
+                else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled)
                 {
                     // place wall
                     CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
                     startPoint.SetActive(false);
                     endPoint.SetActive(false);
+
+                    if(!renderWaterButton.interactable)
+                    {
+                        renderWaterButton.interactable = true;
+                    }
                 }
             }
         }
 
-        //if (startPoint.activeSelf && endPoint.activeSelf)
-        //{
-        //    measureLine.enabled = true;
-        //    measureLine.SetPosition(0, startPoint.transform.position);
-        //    measureLine.SetPosition(1, endPoint.transform.position);
-        //}
+        if (startPoint.activeSelf && endPoint.activeSelf)
+        {
+            measureLine.enabled = true;
+            measureLine.SetPosition(0, startPoint.transform.position);
+            measureLine.SetPosition(1, endPoint.transform.position);
+        }
     }
 
 
@@ -200,7 +215,10 @@ public class PlacementManager : MonoBehaviour
 		waterGameObject = mesh.gameObject;
 
 		// adjust the y-value of the gameobject
-        var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y + elevation, arCamera.transform.position.z);
+        // by removing the pipeHeight from the y-axis the wall cutoff looks right from the get go
+        // DEBUG: remove elevation
+        //var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y + elevation - pipeHeight, arCamera.transform.position.z);
+        var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y - pipeHeight, arCamera.transform.position.z);
         waterGameObject.transform.SetPositionAndRotation(pos, Quaternion.identity);
 	}
 
@@ -275,30 +293,7 @@ public class PlacementManager : MonoBehaviour
         listOfWallMeshes.Add(newMeshObject);
     }
 
-    //private float ConvertToLog(float sliderValue, float elevation)
-    //{
-    //    var minp = 0f;
-    //    var maxp = 1f;
-
-    //    var minv = Mathf.Log(elevation);
-    //    var maxv = Mathf.Log(elevation * 100);
-
-    //    var scale = (maxv - minv) / (maxp - minp);
-
-    //    var logarithmicExagerationOfElevation = Mathf.Exp(minv + scale * (sliderValue - minp));
-
-    //    Debug.Log("Logarithmic Value: " + logarithmicExagerationOfElevation);
-
-    //    return logarithmicExagerationOfElevation;
-    //}
-
     // UI logic
-    public void RenderWater()
-    {
-        waterIsVisible = true;
-        Debug.Log("Pressed water render button -> water is now: " + waterIsVisible);
-    }
-
     public void ResetSession()
     {
         if (waterGameObject != null)
@@ -322,6 +317,26 @@ public class PlacementManager : MonoBehaviour
         arSession.Reset();
         Debug.Log("Session reset");
     }
+
+    public void RenderWater()
+    {
+        waterIsVisible = true;
+        Debug.Log("Pressed water render button -> water is now: " + waterIsVisible);
+        wallPlacementEnabled = false;
+        sliderPanel.SetActive(true);
+    }
+
+    public void PlaceWalls()
+    {
+        // Logic
+        wallPlacementEnabled = true;
+
+        // Disable sliders
+        sliderPanel.SetActive(false);
+
+        Debug.Log("Placing walls is now possible");
+    }
+
 
     public void MultiplyElevation()
     {
