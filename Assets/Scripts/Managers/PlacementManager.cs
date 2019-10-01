@@ -154,6 +154,9 @@ public class PlacementManager : MonoBehaviour
 
                         if (Physics.Raycast(ray, out hitInfo, groundLayerMask))
                         {
+                            // compare hitInfo with all previouse points
+                            // if they are below a certain threshold
+                            // set the startpoint to the closest point
                             startPoint.SetActive(true);
                             startPoint.transform.SetPositionAndRotation(hitInfo.point, Quaternion.identity);
                         }
@@ -174,20 +177,44 @@ public class PlacementManager : MonoBehaviour
 
                 else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled && startPoint.activeSelf && endPoint.activeSelf)
                 {
-                    // Disable temporary linerenderer
-                    measureLine.enabled = false;
 
-                    // place wall
-                    // CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
-                    
-                    // Create the start and endpoint
-                    var startPointObject = Instantiate(clickPointPrefab, endPoint.transform.position, Quaternion.identity);
+					// place wall
+					// CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
+
+					// compare touch.position with all other points in the listOfPlacedObjects
+					// if any of them are within a given threshold set the endPoint to that points position
+
+
+                    // Re-think the code below
+
+					//if (listOfPlacedObjects != null)
+					//{
+					//	foreach (var point in listOfPlacedObjects)
+					//	{
+					//		if (point.transform.position != endPoint.transform.position)
+					//		{
+					//			float dist = Vector3.Distance(point.transform.position, endPoint.transform.position);
+					//			if (dist < 0.1)
+					//			{
+					//				endPoint.transform.position = point.transform.position;
+					//				listOfPlacedObjects.Remove(point);
+					//				return;
+					//			}
+					//		}
+					//	}
+					//}
+
+
+					// Create the start and endpoint - CURRENTLY they have no material!
+					var startPointObject = Instantiate(clickPointPrefab, endPoint.transform.position, Quaternion.identity);
                     var endPointObject = Instantiate(clickPointPrefab, startPoint.transform.position, Quaternion.identity);
                     listOfPlacedObjects.Add(startPointObject);
                     listOfPlacedObjects.Add(endPointObject);
                     
                     // and a linerenderer for those points
                     //DrawLinesBetweenObjects();
+                    // Disable temporary linerenderer
+                    measureLine.enabled = false;
                     DrawLineBetweenTwoPoints(startPoint, endPoint);
                     
                     // then disable the startPoint and endPoint
@@ -202,12 +229,14 @@ public class PlacementManager : MonoBehaviour
             }
         }
 
-        if (startPoint.activeSelf && endPoint.activeSelf)
-        {
-            measureLine.enabled = true;
-            measureLine.SetPosition(0, startPoint.transform.position);
-            measureLine.SetPosition(1, endPoint.transform.position);
-        }
+        // Commented out for debugging purposes
+
+        //if (startPoint.activeSelf && endPoint.activeSelf)
+        //{
+        //    measureLine.enabled = true;
+        //    measureLine.SetPosition(0, startPoint.transform.position);
+        //    measureLine.SetPosition(1, endPoint.transform.position);
+        //}
     }
 
 
