@@ -347,7 +347,10 @@ MonoBehaviour:
     type: 3}
   materialForWalls:
   - {fileID: 2100000, guid: 4ab73a7f375494eb0a311e85736bd9b6, type: 2}
+  - {fileID: 2100000, guid: 9a44c912deb554ae18bac2a3160da4a0, type: 2}
   waterMaterial: {fileID: 2100000, guid: 143b32eb0d9194435b866ef034fa81ba, type: 2}
+  lineRendererPrefab: {fileID: 9118343838390466524, guid: 997e072ceecbe794fb74fba7ce206e08,
+    type: 3}
   arSession: {fileID: 1712310669}
   arRaycastManager: {fileID: 107391714}
   arPlaneManager: {fileID: 107391712}

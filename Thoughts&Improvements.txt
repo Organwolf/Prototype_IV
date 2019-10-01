@@ -1,0 +1,5 @@
+Thoughts and possible improvements
+
+A function called create points should return a point/gameobject.
+CreateClickPointObject(Touch touch) shouldn't create a quad.
+TogglePlaneDetection and other helper functions could be added to a helper class.

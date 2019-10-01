@@ -10,6 +10,7 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.ProBuilder;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 #if PLATFORM_ANDROID
 using UnityEngine.Android;
@@ -35,9 +36,13 @@ public class PlacementManager : MonoBehaviour
     private bool waterIsPlaced;
     private bool waterIsVisible;
     private bool wallPlacementEnabled;
+    private List<GameObject> listOfLinerenderers;
 
     // Csv variables
     private CSVReader csvReader;
+
+    // Line renderer
+    [SerializeField] GameObject lineRendererPrefab;
 
     // AR
     [SerializeField] ARSession arSession;
@@ -85,6 +90,7 @@ public class PlacementManager : MonoBehaviour
         radiusText = adjustRadiusSlider.GetComponent<textOverlayRadiusSlider>();
         listOfPlacedObjects = new List<GameObject>();
         listOfWallMeshes = new List<GameObject>();
+        listOfLinerenderers = new List<GameObject>();
 
         // startPoint & endPoint
         startPoint = Instantiate(clickPointPrefab, Vector3.zero, Quaternion.identity);
@@ -170,13 +176,17 @@ public class PlacementManager : MonoBehaviour
                     // place wall
                     CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
                     // Create the start and endpoint
+                    var startPointObject = Instantiate(clickPointPrefab, endPoint.transform.position, Quaternion.identity);
+                    var endPointObject = Instantiate(clickPointPrefab, startPoint.transform.position, Quaternion.identity);
+                    listOfPlacedObjects.Add(startPointObject);
+                    listOfPlacedObjects.Add(endPointObject);
                     // and a linerenderer for those points
                     // then disable the startPoint and endPoint
 
                     //startPoint.SetActive(false);
                     //endPoint.SetActive(false);
 
-                    if(!renderWaterButton.interactable)
+                    if (!renderWaterButton.interactable)
                     {
                         renderWaterButton.interactable = true;
                     }
@@ -194,6 +204,12 @@ public class PlacementManager : MonoBehaviour
 
 
     // Helper functions
+    private GameObject CreatePoint(Vector3 position)
+    {
+        return null;
+    }
+
+
     private void GenerateWater()
     {
 		if (radius > maximumRaidus)
@@ -234,6 +250,7 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
+    // Currently not in use
     private void CreateClickPointObject(Touch touch)
     {
         Ray ray = arCamera.ScreenPointToRay(touch.position);
@@ -266,7 +283,7 @@ public class PlacementManager : MonoBehaviour
         newMeshObject.AddComponent<MeshRenderer>();
 
         // ge varje mesh ett material
-        newMeshObject.GetComponent<Renderer>().materials = materialForWalls;
+        newMeshObject.GetComponent<Renderer>().material = materialForWalls[0];
         Mesh newMesh = new Mesh();
 
         Vector3 heightVector = new Vector3(0, height, 0);
@@ -292,6 +309,30 @@ public class PlacementManager : MonoBehaviour
 
         // spara undan meshen i en lista
         listOfWallMeshes.Add(newMeshObject);
+    }
+
+    private void DrawLinesBetweenObjects()
+    {
+        int lengthOfList = listOfPlacedObjects.Count;
+        if (lengthOfList > 1)
+        {
+            for (int i = 0; i < lengthOfList - 1; i++)
+            {
+                try
+                {
+                    var lineRendererGameObject = Instantiate(lineRendererPrefab);
+                    var lineRenderer = lineRendererGameObject.GetComponent<LineRenderer>();
+                    lineRenderer.SetPosition(0, listOfPlacedObjects[i].transform.position);
+                    lineRenderer.SetPosition(1, listOfPlacedObjects[i + 1].transform.position);
+                    listOfLinerenderers.Add(lineRendererGameObject);
+                }
+                catch (Exception)
+                {
+                    Debug.LogError("Exceptions baby!");
+                    throw;
+                }
+            }
+        }
     }
 
     // UI logic
