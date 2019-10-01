@@ -3,3 +3,21 @@ Thoughts and possible improvements
 A function called create points should return a point/gameobject.
 CreateClickPointObject(Touch touch) shouldn't create a quad.
 TogglePlaneDetection and other helper functions could be added to a helper class.
+Add a minimum distance for drawing a line?
+
+Can I use this code to solve parts of the movement problem?
+
+if(touch.phase == TouchPhase.Began)
+{
+    // might need to use the ARCamera instead. We'll see
+    Ray ray = arCamera.ScreenPointToRay(touch.position);
+    RaycastHit hitObject;
+
+    if(Physics.Raycast(ray, out hitObject))
+    {
+        if(hitObject.transform.name.Contains("PlacedObject"))
+        {
+            onTouchHold = true;
+        }
+    }
+}

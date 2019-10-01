@@ -64,6 +64,7 @@ public class PlacementManager : MonoBehaviour
     private bool HasSavedPoint;
     private Vector3 savedPoint;
     private List<GameObject> listOfPlacedObjects;
+    private int groundLayerMask = 1 << 8;
 
     // ProBuilder variables
     private GameObject waterGameObject;
@@ -151,7 +152,7 @@ public class PlacementManager : MonoBehaviour
                         Ray ray = arCamera.ScreenPointToRay(touch.position);
                         RaycastHit hitInfo;
 
-                        if (Physics.Raycast(ray, out hitInfo))
+                        if (Physics.Raycast(ray, out hitInfo, groundLayerMask))
                         {
                             startPoint.SetActive(true);
                             startPoint.transform.SetPositionAndRotation(hitInfo.point, Quaternion.identity);
@@ -164,27 +165,34 @@ public class PlacementManager : MonoBehaviour
                     Ray ray = arCamera.ScreenPointToRay(touch.position);
                     RaycastHit hitInfo;
 
-                    if (Physics.Raycast(ray, out hitInfo))
+                    if (Physics.Raycast(ray, out hitInfo, groundLayerMask))
                     {
                         endPoint.SetActive(true);
                         endPoint.transform.SetPositionAndRotation(hitInfo.point, Quaternion.identity);
                     }
                 }
 
-                else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled)
+                else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled && startPoint.activeSelf && endPoint.activeSelf)
                 {
+                    // Disable temporary linerenderer
+                    measureLine.enabled = false;
+
                     // place wall
-                    CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
+                    // CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
+                    
                     // Create the start and endpoint
                     var startPointObject = Instantiate(clickPointPrefab, endPoint.transform.position, Quaternion.identity);
                     var endPointObject = Instantiate(clickPointPrefab, startPoint.transform.position, Quaternion.identity);
                     listOfPlacedObjects.Add(startPointObject);
                     listOfPlacedObjects.Add(endPointObject);
+                    
                     // and a linerenderer for those points
+                    //DrawLinesBetweenObjects();
+                    DrawLineBetweenTwoPoints(startPoint, endPoint);
+                    
                     // then disable the startPoint and endPoint
-
-                    //startPoint.SetActive(false);
-                    //endPoint.SetActive(false);
+                    startPoint.SetActive(false);
+                    endPoint.SetActive(false);
 
                     if (!renderWaterButton.interactable)
                     {
@@ -203,7 +211,17 @@ public class PlacementManager : MonoBehaviour
     }
 
 
+
     // Helper functions
+    private void DrawLineBetweenTwoPoints(GameObject startPoint, GameObject endPoint)
+    {
+        var lineRendererGameObject = Instantiate(lineRendererPrefab);
+        var lineRenderer = lineRendererGameObject.GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, startPoint.transform.position);
+        lineRenderer.SetPosition(1, endPoint.transform.position);
+        listOfLinerenderers.Add(lineRendererGameObject);
+    }
+
     private GameObject CreatePoint(Vector3 position)
     {
         return null;
@@ -340,6 +358,7 @@ public class PlacementManager : MonoBehaviour
     {
         if (waterGameObject != null)
             Destroy(waterGameObject);
+
         // destroy the placed objects if any
         for (int i = 0; i < listOfPlacedObjects.Count; i++)
         {
@@ -352,6 +371,16 @@ public class PlacementManager : MonoBehaviour
         {
             Destroy(listOfWallMeshes[i].gameObject);
         }
+        listOfWallMeshes.Clear();
+
+        for (int i = 0; i < listOfLinerenderers.Count; i++)
+        {
+            Destroy(listOfLinerenderers[i].gameObject);
+        }
+        listOfLinerenderers.Clear();
+
+        // reset variables
+        waterIsVisible = false;
         adjustRadiusSlider.value = 0;
         multiplyElevationSlider.value = 0;
         HasSavedPoint = false;
