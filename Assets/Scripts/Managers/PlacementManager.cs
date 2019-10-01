@@ -126,6 +126,7 @@ public class PlacementManager : MonoBehaviour
 
                 if (TouchPhase.Began == touch.phase)
                 {
+                    // Placement of the transparent plane used to raycast against
                     if (!planeIsPlaced)
                     {
                         if (arRaycastManager.Raycast(touch.position, hitsAR, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
@@ -150,10 +151,6 @@ public class PlacementManager : MonoBehaviour
                             startPoint.transform.SetPositionAndRotation(hitInfo.point, Quaternion.identity);
                         }
                     }
-                    //else if (planeIsPlaced)
-                    //{
-                    //    CreateClickPointObject(touch);
-                    //}
                 }
 
                 else if (TouchPhase.Moved == touch.phase && wallPlacementEnabled)
@@ -172,8 +169,12 @@ public class PlacementManager : MonoBehaviour
                 {
                     // place wall
                     CreateQuadFromPoints(startPoint.transform.position, endPoint.transform.position);
-                    startPoint.SetActive(false);
-                    endPoint.SetActive(false);
+                    // Create the start and endpoint
+                    // and a linerenderer for those points
+                    // then disable the startPoint and endPoint
+
+                    //startPoint.SetActive(false);
+                    //endPoint.SetActive(false);
 
                     if(!renderWaterButton.interactable)
                     {

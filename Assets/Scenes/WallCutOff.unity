@@ -389,7 +389,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 107391709}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -929,6 +929,16 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4674721499694745250, guid: 41e10a5beec3141fd9d638dc54988354,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 107391713}
+    - target: {fileID: 4674721499694745250, guid: 41e10a5beec3141fd9d638dc54988354,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RenderWater
+      objectReference: {fileID: 0}
     - target: {fileID: 4674721499044903659, guid: 41e10a5beec3141fd9d638dc54988354,
         type: 3}
       propertyPath: m_IsActive
@@ -948,6 +958,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: IncreaseRadius
+      objectReference: {fileID: 0}
+    - target: {fileID: 4674721499617871937, guid: 41e10a5beec3141fd9d638dc54988354,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 107391713}
+    - target: {fileID: 4674721499617871937, guid: 41e10a5beec3141fd9d638dc54988354,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ResetSession
       objectReference: {fileID: 0}
     - target: {fileID: 4674721500946396205, guid: 41e10a5beec3141fd9d638dc54988354,
         type: 3}
@@ -1188,26 +1208,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RenderText
-      objectReference: {fileID: 0}
-    - target: {fileID: 4674721499617871937, guid: 41e10a5beec3141fd9d638dc54988354,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 107391713}
-    - target: {fileID: 4674721499617871937, guid: 41e10a5beec3141fd9d638dc54988354,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResetSession
-      objectReference: {fileID: 0}
-    - target: {fileID: 4674721499694745250, guid: 41e10a5beec3141fd9d638dc54988354,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 107391713}
-    - target: {fileID: 4674721499694745250, guid: 41e10a5beec3141fd9d638dc54988354,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RenderWater
       objectReference: {fileID: 0}
     - target: {fileID: 4674721499023607617, guid: 41e10a5beec3141fd9d638dc54988354,
         type: 3}
