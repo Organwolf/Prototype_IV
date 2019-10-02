@@ -87,8 +87,7 @@ public class PlacementManager : MonoBehaviour
 
     private void Awake()
     {
-        multiplierText = multiplyElevationSlider.GetComponent<textOverlayMultSlider>();
-        radiusText = adjustRadiusSlider.GetComponent<textOverlayRadiusSlider>();
+        // Lists for wall objects
         listOfPlacedObjects = new List<GameObject>();
         listOfWallMeshes = new List<GameObject>();
         listOfLinerenderers = new List<GameObject>();
@@ -102,6 +101,8 @@ public class PlacementManager : MonoBehaviour
         measureLine.enabled = false;
 
         // UI
+        multiplierText = multiplyElevationSlider.GetComponent<textOverlayMultSlider>();
+        radiusText = adjustRadiusSlider.GetComponent<textOverlayRadiusSlider>();
         renderWaterButton.interactable = false;
         placeWallsButton.interactable = false;
     }
@@ -121,7 +122,6 @@ public class PlacementManager : MonoBehaviour
 
     private void Update()
     {
-
         if(planeIsPlaced && waterIsVisible)
             GenerateWater();
 
@@ -154,15 +154,8 @@ public class PlacementManager : MonoBehaviour
 
                         if (Physics.Raycast(ray, out hitInfo, groundLayerMask))
                         {
-                            // compare hitInfo with all previouse points
-                            // if they are below a certain threshold
-                            // set the startpoint to the closest point
                             startPoint.SetActive(true);
                             startPoint.transform.SetPositionAndRotation(hitInfo.point, Quaternion.identity);
-
-                            //startPoint = Instantiate(clickPointPrefab, hitInfo.point, Quaternion.identity);
-                            //endPoint = Instantiate(clickPointPrefab, hitInfo.point, Quaternion.identity);
-                            // och endpoint?
                         }
                     }
                 }
@@ -180,7 +173,6 @@ public class PlacementManager : MonoBehaviour
                 }
 
                 else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled && startPoint.activeSelf && endPoint.activeSelf)
-                //else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled)
                 {
                     if (listOfPlacedObjects != null)
                     {
@@ -192,9 +184,6 @@ public class PlacementManager : MonoBehaviour
                                 if (dist < 0.1)
                                 {
                                     endPoint.transform.position = point.transform.position;
-                                    //listOfPlacedObjects.Remove(point);
-                                    //DrawLineBetweenTwoPoints(startPoint, endPoint);
-                                    //return;
                                 }
                             }
                         }
@@ -206,19 +195,15 @@ public class PlacementManager : MonoBehaviour
                     listOfPlacedObjects.Add(startPointObject);
                     listOfPlacedObjects.Add(endPointObject);
                     
-                    // and a linerenderer for those points
-                    // DrawLinesBetweenObjects();
-                    // Disable temporary linerenderer
+                    // Disable temporary line renderer and create a new one
                     measureLine.enabled = false;
                     DrawLineBetweenTwoPoints(startPoint, endPoint);
 
-                    //// then disable the startPoint and endPoint
+                    // Then disable the startPoint and endPoint
                     startPoint.SetActive(false);
                     endPoint.SetActive(false);
 
-                    // Re-think the code below
-
-
+                    // A wall has been placed. Now the water can be rendered
                     if (!renderWaterButton.interactable)
                     {
                         renderWaterButton.interactable = true;
@@ -227,17 +212,14 @@ public class PlacementManager : MonoBehaviour
             }
         }
 
-        // Commented out for debugging purposes
-
-        //if (startPoint.activeSelf && endPoint.activeSelf)
-        //{
-        //    measureLine.enabled = true;
-        //    measureLine.SetPosition(0, startPoint.transform.position);
-        //    measureLine.SetPosition(1, endPoint.transform.position);
-        //}
+        // Draws a line while placing the endpoint
+        if (startPoint.activeSelf && endPoint.activeSelf)
+        {
+            measureLine.enabled = true;
+            measureLine.SetPosition(0, startPoint.transform.position);
+            measureLine.SetPosition(1, endPoint.transform.position);
+        }
     }
-
-
 
     // Helper functions
     private void DrawLineBetweenTwoPoints(GameObject startPoint, GameObject endPoint)
@@ -248,12 +230,6 @@ public class PlacementManager : MonoBehaviour
         lineRenderer.SetPosition(1, endPoint.transform.position);
         listOfLinerenderers.Add(lineRendererGameObject);
     }
-
-    private GameObject CreatePoint(Vector3 position)
-    {
-        return null;
-    }
-
 
     private void GenerateWater()
     {
@@ -352,7 +328,7 @@ public class PlacementManager : MonoBehaviour
 
         newMeshFilter.mesh = newMesh;
 
-        // spara undan meshen i en lista
+        // Add the mesh to the list
         listOfWallMeshes.Add(newMeshObject);
     }
 
@@ -386,14 +362,14 @@ public class PlacementManager : MonoBehaviour
         if (waterGameObject != null)
             Destroy(waterGameObject);
 
-        // destroy the placed objects if any
+        // Destroy the placed objects if any
         for (int i = 0; i < listOfPlacedObjects.Count; i++)
         {
             Destroy(listOfPlacedObjects[i].gameObject);
         }
         listOfPlacedObjects.Clear();
 
-        // destroy the gameobjects holding the wall meshes
+        // Destroy the gameobjects holding the wall meshes
         for (int i = 0; i < listOfWallMeshes.Count; i++)
         {
             Destroy(listOfWallMeshes[i].gameObject);
@@ -406,7 +382,7 @@ public class PlacementManager : MonoBehaviour
         }
         listOfLinerenderers.Clear();
 
-        // reset variables
+        // Reset variables
         waterIsVisible = false;
         adjustRadiusSlider.value = 0;
         multiplyElevationSlider.value = 0;
@@ -438,7 +414,7 @@ public class PlacementManager : MonoBehaviour
 
     public void MultiplyElevation()
     {
-        // calculate elevation returns cm - dividing by 100 turns that into meters
+        // Calculate elevation returns cm - dividing by 100 turns that into meters
         try
         {
             elevation = ((float)csvReader.CalculateElevationAtLocation().altitude) / 100.0f;
@@ -458,7 +434,7 @@ public class PlacementManager : MonoBehaviour
 
     public void IncreaseRadius()
     {
-        // adjustment of radius
+        // Adjustment of radius
         var sliderValue = adjustRadiusSlider.value;
         radius = sliderValue * maximumRaidus + minimumRadius;
 
