@@ -156,6 +156,22 @@ public class PlacementManager : MonoBehaviour
                         {
                             startPoint.SetActive(true);
                             startPoint.transform.SetPositionAndRotation(hitInfo.point, Quaternion.identity);
+
+                            // Snapping startPoint
+                            if (listOfPlacedObjects != null)
+                            {
+                                foreach (var point in listOfPlacedObjects)
+                                {
+                                    if (point.transform.position != startPoint.transform.position)
+                                    {
+                                        float dist = Vector3.Distance(point.transform.position, startPoint.transform.position);
+                                        if (dist < 0.1)
+                                        {
+                                            startPoint.transform.position = point.transform.position;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -174,6 +190,7 @@ public class PlacementManager : MonoBehaviour
 
                 else if (TouchPhase.Ended == touch.phase && wallPlacementEnabled && startPoint.activeSelf && endPoint.activeSelf)
                 {
+                    // Snapping the endPoint
                     if (listOfPlacedObjects != null)
                     {
                         foreach (var point in listOfPlacedObjects)
