@@ -207,7 +207,16 @@ public class PlacementManager : MonoBehaviour
                         }
                     }
 
-					// Create the start and endpoint - CURRENTLY they have no material!
+                    // De-activates objects/lines smaller than 10 cm
+                    if(Vector3.Distance(startPoint.transform.position,endPoint.transform.position) < 0.1f)
+                    {
+                        startPoint.SetActive(false);
+                        endPoint.SetActive(false);
+                        measureLine.enabled = false;
+                        return;
+                    }
+
+					// Create the start and endpoint
 					var startPointObject = Instantiate(clickPointPrefab, startPoint.transform.position, Quaternion.identity);
                     var endPointObject = Instantiate(clickPointPrefab, endPoint.transform.position, Quaternion.identity);
                     listOfPlacedObjects.Add(startPointObject);
@@ -454,6 +463,7 @@ public class PlacementManager : MonoBehaviour
     public void PlaceWalls()
     {
         wallPlacementEnabled = true;
+        waterIsVisible = false;
         sliderPanel.SetActive(false);
         renderWallMeshes(false);
         renderClickPoints(true);
