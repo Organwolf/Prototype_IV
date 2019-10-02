@@ -1,5 +1,5 @@
 ﻿/**
- *  Disabled the radius slider for the 23/9/19 prototype 
+ *  Snap functionality for start and end points 2/10 -19
  *
  *
  */
@@ -288,7 +288,7 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    // Currently not in use
+    // Currently NOT in use
     private void CreateClickPointObject(Touch touch)
     {
         Ray ray = arCamera.ScreenPointToRay(touch.position);
