@@ -31,11 +31,12 @@ public class PlacementManager : MonoBehaviour
 
     // Plane, water & wall variables
     private bool planeIsPlaced;
-    private float height = 4;
+    private float height = 0.5f;    // changed from 4 to 0.5 for debugging
     private GameObject groundPlane;
     private bool waterIsPlaced;
     private bool waterIsVisible;
     private bool wallPlacementEnabled;
+    private bool toggleVisibilityOfWalls;
     private List<GameObject> listOfLinerenderers;
 
     // Csv variables
@@ -220,6 +221,9 @@ public class PlacementManager : MonoBehaviour
                     startPoint.SetActive(false);
                     endPoint.SetActive(false);
 
+                    // Create a wall with the startpoint and endpoint as corner vertices
+                    CreateQuadFromPoints(startPointObject.transform.position, endPointObject.transform.position);
+
                     // A wall has been placed. Now the water can be rendered
                     if (!renderWaterButton.interactable)
                     {
@@ -320,7 +324,7 @@ public class PlacementManager : MonoBehaviour
         MeshFilter newMeshFilter = newMeshObject.AddComponent<MeshFilter>();
         newMeshObject.AddComponent<MeshRenderer>();
 
-        // ge varje mesh ett material
+        // ge varje mesh ett material - 0: Occlusion
         newMeshObject.GetComponent<Renderer>().material = materialForWalls[0];
         Mesh newMesh = new Mesh();
 
@@ -345,8 +349,35 @@ public class PlacementManager : MonoBehaviour
 
         newMeshFilter.mesh = newMesh;
 
+        // At first the meshes aren't visible
+        newMeshObject.SetActive(false);
+
         // Add the mesh to the list
         listOfWallMeshes.Add(newMeshObject);
+    }
+
+    private void renderWallMeshes(bool isVisible)
+    {
+        foreach (GameObject wallMesh in listOfWallMeshes)
+        {
+            wallMesh.SetActive(isVisible);
+        }
+    }
+
+    private void renderClickPoints(bool isVisible)
+    {
+        foreach (GameObject point in listOfPlacedObjects)
+        {
+            point.SetActive(isVisible);
+        }
+    }
+
+    private void renderLineRenderers(bool isVisible)
+    {
+        foreach (GameObject line in listOfLinerenderers)
+        {
+            line.SetActive(isVisible);
+        }
     }
 
     private void DrawLinesBetweenObjects()
@@ -415,17 +446,18 @@ public class PlacementManager : MonoBehaviour
         Debug.Log("Pressed water render button -> water is now: " + waterIsVisible);
         wallPlacementEnabled = false;
         sliderPanel.SetActive(true);
+        renderWallMeshes(true);
+        renderClickPoints(false);
+        renderLineRenderers(false);
     }
 
     public void PlaceWalls()
     {
-        // Logic
         wallPlacementEnabled = true;
-
-        // Disable sliders
         sliderPanel.SetActive(false);
-
-        Debug.Log("Placing walls is now possible");
+        renderWallMeshes(false);
+        renderClickPoints(true);
+        renderLineRenderers(true);
     }
 
 

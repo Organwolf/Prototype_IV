@@ -21,3 +21,8 @@ if(touch.phase == TouchPhase.Began)
         }
     }
 }
+
+The code used for snapping object together should be moved to a seperate function. Both for 
+readability and encapsulation(?). Also the raycasting might be able to consolidate. Now it is done
+multiple times. It might be possible to do it once and use that hitinfo inside of the if/else if 
+statements.
