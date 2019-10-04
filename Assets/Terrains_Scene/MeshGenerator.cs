@@ -5,6 +5,7 @@ using UnityEngine;
 
 // Resources: https://www.youtube.com/watch?v=eJEpeUH1EMg
 //            https://www.youtube.com/watch?v=64NblGkAabk
+//            https://www.youtube.com/watch?v=lNyZ9K71Vhc
 
 [RequireComponent(typeof(MeshFilter))]
 public class MeshGenerator : MonoBehaviour
@@ -13,6 +14,7 @@ public class MeshGenerator : MonoBehaviour
 
     Vector3[] vertices;
     int[] triangles;
+    Color[] colors;
 
     private Terrain terrain;
     private List<TerrainFragment> fragments;
@@ -23,6 +25,10 @@ public class MeshGenerator : MonoBehaviour
     [SerializeField] private int zSize = 20;
     [SerializeField] private int xSize = 20;
 
+    public Gradient gradient;
+
+    float minTerrainHeight;
+    float maxTerrainHeight;
 
     // Start is called before the first frame update
     void Start()
@@ -47,6 +53,12 @@ public class MeshGenerator : MonoBehaviour
             {
                 float y = (fragments[i].Elevation) / 100f;
                 vertices[i] = new Vector3(x*2, y, z*2);
+
+                if (y > maxTerrainHeight)
+                    maxTerrainHeight = y;
+                if (y < minTerrainHeight)
+                    minTerrainHeight = y;
+
                 i++;
             }
         }
@@ -73,6 +85,18 @@ public class MeshGenerator : MonoBehaviour
             }
             vert++;
         }
+
+        // UVs
+        colors = new Color[vertices.Length];
+        for (int i = 0, z = 0; z <= zSize; z++)
+        {
+            for (int x = 0; x <= xSize; x++)
+            {
+                float height = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, vertices[i].y);
+                colors[i] = gradient.Evaluate(height);
+                i++;
+            }
+        }
     }
 
     void UpdateMesh()
@@ -81,6 +105,7 @@ public class MeshGenerator : MonoBehaviour
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.colors = colors;
 
         mesh.RecalculateNormals();
     }
