@@ -40,12 +40,12 @@ public class DelaunayMesh : MonoBehaviour {
     // The delaunay mesh
     private TriangleNet.Mesh mesh = null;
 
-    void Start()
-    {
-        Generate();
-    }
+    //void Start()
+    //{
+    //    Generate();
+    //}
 
-    public virtual void Generate() {
+    public virtual void Generate(float fixedElevation) {
         UnityEngine.Random.InitState(0);
 
         elevations = new List<float>();
@@ -108,7 +108,7 @@ public class DelaunayMesh : MonoBehaviour {
             //elevations.Add(elevation * elevationScale);
             
             // ELEVATION
-            elevations.Add(0);
+            elevations.Add(fixedElevation);
         }
 
         MakeMesh();
