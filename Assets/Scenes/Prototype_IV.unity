@@ -120,13 +120,19 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &40919614 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4674721500979152462, guid: 41e10a5beec3141fd9d638dc54988354,
+    type: 3}
+  m_PrefabInstance: {fileID: 1480679072}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &40919616 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4674721500979152460, guid: 41e10a5beec3141fd9d638dc54988354,
     type: 3}
   m_PrefabInstance: {fileID: 1480679072}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 40919614}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -361,6 +367,8 @@ MonoBehaviour:
   renderWaterButton: {fileID: 225398836}
   placeWallsButton: {fileID: 63068016}
   sliderPanel: {fileID: 302988618}
+  radiusTextVisibility: {fileID: 1114040580}
+  multiplierTextVisibility: {fileID: 40919614}
 --- !u!114 &107391714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -878,13 +886,19 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1114040580 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4674721500946396207, guid: 41e10a5beec3141fd9d638dc54988354,
+    type: 3}
+  m_PrefabInstance: {fileID: 1480679072}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1114040582 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4674721500946396205, guid: 41e10a5beec3141fd9d638dc54988354,
     type: 3}
   m_PrefabInstance: {fileID: 1480679072}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1114040580}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}

@@ -31,7 +31,7 @@ public class PlacementManager : MonoBehaviour
 
     // Plane, water & wall variables
     private bool planeIsPlaced;
-    private float height = 0.5f;    // changed from 4 to 0.5 for debugging
+    private float height = 4.0f;    // changed from 4 to 0.5 for debugging
     private GameObject groundPlane;
     private bool waterIsPlaced;
     private bool waterIsVisible;
@@ -58,6 +58,8 @@ public class PlacementManager : MonoBehaviour
     [SerializeField] Button renderWaterButton;
     [SerializeField] Button placeWallsButton;
     [SerializeField] GameObject sliderPanel;
+    [SerializeField] GameObject radiusTextVisibility;
+    [SerializeField] GameObject multiplierTextVisibility;
 
     // Raycasts
     private List<ARRaycastHit> hitsAR = new List<ARRaycastHit>();
@@ -282,11 +284,11 @@ public class PlacementManager : MonoBehaviour
 		mesh.transform.SetParent(transform, false);
 		waterGameObject = mesh.gameObject;
 
-		// adjust the y-value of the gameobject
+        // adjust the y-value of the gameobject
         // by removing the pipeHeight from the y-axis the wall cutoff looks right from the get go
         // DEBUG: remove elevation
-        //var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y + elevation - pipeHeight, arCamera.transform.position.z);
-        var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y - pipeHeight, arCamera.transform.position.z);
+        var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y + elevation - pipeHeight, arCamera.transform.position.z);
+        //var pos = new Vector3(arCamera.transform.position.x, groundPlane.transform.position.y - pipeHeight, arCamera.transform.position.z);
         waterGameObject.transform.SetPositionAndRotation(pos, Quaternion.identity);
 	}
 
@@ -458,6 +460,8 @@ public class PlacementManager : MonoBehaviour
         renderWallMeshes(true);
         renderClickPoints(false);
         renderLineRenderers(false);
+        multiplierTextVisibility.SetActive(true);
+        radiusTextVisibility.SetActive(true);
     }
 
     public void PlaceWalls()
@@ -468,6 +472,8 @@ public class PlacementManager : MonoBehaviour
         renderWallMeshes(false);
         renderClickPoints(true);
         renderLineRenderers(true);
+        multiplierTextVisibility.SetActive(false);
+        radiusTextVisibility.SetActive(false);
     }
 
 
