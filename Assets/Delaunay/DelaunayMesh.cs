@@ -40,80 +40,98 @@ public class DelaunayMesh : MonoBehaviour {
     // The delaunay mesh
     private TriangleNet.Mesh mesh = null;
 
-    //void Start()
-    //{
-    //    Generate();
-    //}
+    void Start()
+    {
+        Generate(2);
+    }
 
     public virtual void Generate(float fixedElevation) {
         UnityEngine.Random.InitState(0);
 
         elevations = new List<float>();
 
-        float[] seed = new float[octaves];
+        //float[] seed = new float[octaves];
 
-        for (int i = 0; i < octaves; i++) {
-            seed[i] = Random.Range(0.0f, 100.0f);
-        }
-        
+        //for (int i = 0; i < octaves; i++) {
+        //    seed[i] = Random.Range(0.0f, 100.0f);
+        //}
+
         //PoissonDiscSampler sampler = new PoissonDiscSampler(xsize, ysize, minPointRadius);
-
-        PoissonDiscSampler sampler = new PoissonDiscSampler(xsize, ysize, minPointRadius);
 
         Polygon polygon = new Polygon();
 
         polygon.Add(new Vertex(1, 1));
         polygon.Add(new Vertex(2, 2));
         polygon.Add(new Vertex(0, 3));
-        polygon.Add(new Vertex(1, 10));
-        polygon.Add(new Vertex(13, 4));
-        polygon.Add(new Vertex(0, 20));
-        polygon.Add(new Vertex(7, 7));
-        polygon.Add(new Vertex(15, 3));
-        polygon.Add(new Vertex(4, 3));
-        polygon.Add(new Vertex(5.5, 7.2));
+        polygon.Add(new Vertex(3, 1));
+        polygon.Add(new Vertex(5, 2));
+        polygon.Add(new Vertex(7, 3));
+
+
+        GameObject obj0 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj0.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj0.transform.localPosition = new Vector3(1, 0, 1);
+        GameObject obj1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj1.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj1.transform.localPosition = new Vector3(2, 0,2);
+        GameObject obj2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj2.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj2.transform.localPosition = new Vector3(0, 0, 3);
+        GameObject obj3 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj3.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj3.transform.localPosition = new Vector3(3, 0, 1);
+        GameObject obj4 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj4.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj4.transform.localPosition = new Vector3(5, 0, 2);
+        GameObject obj5 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj5.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj5.transform.localPosition = new Vector3(7, 0, 3);
+
 
         //// Add uniformly-spaced points
-        //foreach (Vector2 sample in sampler.Samples()) {
+        //foreach (Vector2 sample in sampler.Samples())
+        //{
         //    polygon.Add(new Vertex((double)sample.x, (double)sample.y));
         //}
 
         //// Add some randomly sampled points
-        //for (int i = 0; i < randomPoints; i++) {
+        //for (int i = 0; i < randomPoints; i++)
+        //{
         //    polygon.Add(new Vertex(Random.Range(0.0f, xsize), Random.Range(0.0f, ysize)));
         //}
 
         TriangleNet.Meshing.ConstraintOptions options = new TriangleNet.Meshing.ConstraintOptions() { ConformingDelaunay = true };
         mesh = (TriangleNet.Mesh)polygon.Triangulate(options);
         
-        bin = new TriangleBin(mesh, xsize, ysize, minPointRadius * 2.0f);
+        //bin = new TriangleBin(mesh, xsize, ysize, minPointRadius * 2.0f);
 
         // Sample perlin noise to get elevations
         foreach (Vertex vert in mesh.Vertices) {
-            float elevation = 0.0f;
-            float amplitude = Mathf.Pow(persistence, octaves);
-            float frequency = 1.0f;
-            float maxVal = 0.0f;
+           Debug.Log(vert.ToString());
+            //float elevation = 0.0f;
+            //float amplitude = Mathf.Pow(persistence, octaves);
+            //float frequency = 1.0f;
+            //float maxVal = 0.0f;
 
-            for (int o = 0; o < octaves; o++) {
-                float sample = (Mathf.PerlinNoise(seed[o] + (float)vert.x*sampleSize / (float)xsize * frequency,
-                                                  seed[o] + (float)vert.y*sampleSize / (float)ysize * frequency) - 0.5f) * amplitude;
-                elevation += sample;
-                maxVal += amplitude;
-                amplitude /= persistence;
-                frequency *= frequencyBase;
-            }
+            //for (int o = 0; o < octaves; o++) {
+            //    float sample = (Mathf.PerlinNoise(seed[o] + (float)vert.x*sampleSize / (float)xsize * frequency,
+            //                                      seed[o] + (float)vert.y*sampleSize / (float)ysize * frequency) - 0.5f) * amplitude;
+            //    elevation += sample;
+            //    maxVal += amplitude;
+            //    amplitude /= persistence;
+            //    frequency *= frequencyBase;
+            //}
 
-            elevation = elevation / maxVal;
+            //elevation = elevation / maxVal;
             //elevations.Add(elevation * elevationScale);
-            
+
             // ELEVATION
             elevations.Add(fixedElevation);
         }
 
         MakeMesh();
 
-        ScatterDetailMeshes();
+        //ScatterDetailMeshes();
     }
     
     public void MakeMesh() {
@@ -125,7 +143,6 @@ public class DelaunayMesh : MonoBehaviour {
             List<Vector2> uvs = new List<Vector2>();
             List<int> triangles = new List<int>();
 
-            // CHUNK LOGIC - material
             int chunkEnd = chunkStart + trianglesInChunk;
             for (int i = chunkStart; i < chunkEnd; i++)
             {
