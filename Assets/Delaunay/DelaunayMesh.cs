@@ -42,21 +42,12 @@ public class DelaunayMesh : MonoBehaviour {
 
     void Start()
     {
-        Generate(2);
+        Generate(0);
     }
 
     public virtual void Generate(float fixedElevation) {
-        UnityEngine.Random.InitState(0);
 
         elevations = new List<float>();
-
-        //float[] seed = new float[octaves];
-
-        //for (int i = 0; i < octaves; i++) {
-        //    seed[i] = Random.Range(0.0f, 100.0f);
-        //}
-
-        //PoissonDiscSampler sampler = new PoissonDiscSampler(xsize, ysize, minPointRadius);
 
         Polygon polygon = new Polygon();
 
@@ -66,7 +57,7 @@ public class DelaunayMesh : MonoBehaviour {
         polygon.Add(new Vertex(3, 1));
         polygon.Add(new Vertex(5, 2));
         polygon.Add(new Vertex(7, 3));
-
+        polygon.Add(new Vertex(3, 4));
 
         GameObject obj0 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         obj0.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
@@ -86,52 +77,21 @@ public class DelaunayMesh : MonoBehaviour {
         GameObject obj5 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         obj5.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
         obj5.transform.localPosition = new Vector3(7, 0, 3);
+        GameObject obj6 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj6.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        obj6.transform.localPosition = new Vector3(3, 0, 4);
 
-
-        //// Add uniformly-spaced points
-        //foreach (Vector2 sample in sampler.Samples())
-        //{
-        //    polygon.Add(new Vertex((double)sample.x, (double)sample.y));
-        //}
-
-        //// Add some randomly sampled points
-        //for (int i = 0; i < randomPoints; i++)
-        //{
-        //    polygon.Add(new Vertex(Random.Range(0.0f, xsize), Random.Range(0.0f, ysize)));
-        //}
-
-        TriangleNet.Meshing.ConstraintOptions options = new TriangleNet.Meshing.ConstraintOptions() { ConformingDelaunay = true };
+        TriangleNet.Meshing.ConstraintOptions options = new TriangleNet.Meshing.ConstraintOptions() { ConformingDelaunay = false };
         mesh = (TriangleNet.Mesh)polygon.Triangulate(options);
-        
-        //bin = new TriangleBin(mesh, xsize, ysize, minPointRadius * 2.0f);
+
+        Debug.Log(mesh.Vertices.Count);
 
         // Sample perlin noise to get elevations
         foreach (Vertex vert in mesh.Vertices) {
            Debug.Log(vert.ToString());
-            //float elevation = 0.0f;
-            //float amplitude = Mathf.Pow(persistence, octaves);
-            //float frequency = 1.0f;
-            //float maxVal = 0.0f;
-
-            //for (int o = 0; o < octaves; o++) {
-            //    float sample = (Mathf.PerlinNoise(seed[o] + (float)vert.x*sampleSize / (float)xsize * frequency,
-            //                                      seed[o] + (float)vert.y*sampleSize / (float)ysize * frequency) - 0.5f) * amplitude;
-            //    elevation += sample;
-            //    maxVal += amplitude;
-            //    amplitude /= persistence;
-            //    frequency *= frequencyBase;
-            //}
-
-            //elevation = elevation / maxVal;
-            //elevations.Add(elevation * elevationScale);
-
-            // ELEVATION
-            elevations.Add(fixedElevation);
+           elevations.Add(fixedElevation);
         }
-
         MakeMesh();
-
-        //ScatterDetailMeshes();
     }
     
     public void MakeMesh() {
