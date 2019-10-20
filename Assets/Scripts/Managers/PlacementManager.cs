@@ -491,8 +491,12 @@ public class PlacementManager : MonoBehaviour
         }
         var sliderValue = multiplyElevationSlider.value;
 
+        Debug.Log($"Elevation before log value applied: {elevation} Slider value: {sliderValue}");
+
         var logarithmicChange = Helpers.ConvertToLog(sliderValue, elevation);
         elevation = logarithmicChange;
+
+        Debug.Log($"Logarithmic change: {logarithmicChange}");
 
         multiplierText.SetText("Multiplier: \n" + System.Math.Round(elevation,2));
     }
